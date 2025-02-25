@@ -8,14 +8,14 @@
 	let currentMessageId: string | null = $state(null);
 	let errorMessage = $state('');
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	async function handleStream(query: string) {
 		$statusStore = 'streaming';
 		errorMessage = '';
 
 		try {
-			const response = await fetch(`/chat/${data.sessionId}/stream`, {
+			const response = await fetch(`/chat/${data.sessionId}/stream/langchain/ollama`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -40,7 +40,6 @@
 			const assistantMessage = chatStore.addMessage('assistant', '', data.sessionId);
 			currentMessageId = assistantMessage.id;
 
-			let accumulatedContent = ''; // Keep track of accumulated content
 
 			while (true) {
 				const { done, value } = await reader.read();
@@ -50,7 +49,6 @@
 				const chunk = decoder.decode(value, { stream: true });
 				if (currentMessageId) {
 					chatStore.updateMessage(currentMessageId, chunk);
-					accumulatedContent += chunk;
 				}
 			}
 
@@ -68,7 +66,7 @@
 	 const buttonDisabled = $derived($statusStore !== 'ready');
 </script>
 
-<div class="p-4 bg-white dark:bg-gradient-to-b from-slate-800 to-slate-900 rounded-t-xl shadow-2xl">
+<div class="p-8 bg-white dark:bg-gradient-to-b from-slate-800 to-slate-900 rounded-t-xl shadow-2xl">
     <form
         class="max-w-4xl mx-auto"
         method="POST"
@@ -85,7 +83,7 @@
             // Add user message to store with chat ID
             chatStore.addMessage('user', currentQuery, data.sessionId);
 
-            return async ({ result }) => {
+            return async ({ result, update }) => {
                 if (result.type === 'success' && result.data?.success) {
                     await handleStream(currentQuery);
                 } else {
@@ -99,20 +97,20 @@
             <div class="flex gap-2">
                 <input
                     name="query"
-                    class="flex-1 p-2 bg-white dark:bg-gray-700 text-white border border-gray-600 rounded-lg focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 shadow-inner"
+                    class="flex-1 p-2 bg-white text-black dark:bg-gray-700 dark:text-neutral-300 border border-gray-600 rounded-lg focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 shadow-inner"
                     placeholder="Type your message..."
                     bind:value={userQuery}
                     disabled={$statusStore !== 'ready'}
                 />
                 <button
                     type="submit"
-                    class="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-300 rounded-lg shadow-xl flex items-center justify-center focus:ring-4 dark:focus:ring-gray-100 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-300 rounded-lg shadow-xl flex items-center justify-center focus:ring-4 dark:focus:ring-gray-100 focus:ring-purple-500 disabled:opacity-90 disabled:cursor-not-allowed"
                     disabled={buttonDisabled}
                 >
                     {#if $statusStore === 'submitted' || $statusStore === 'streaming'}
-                        <div class="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
+                        <div class="w-6 h-6 border-t-3 border-t-cyan-300 border-white rounded-full animate-spin"></div>
                     {:else}
-                        <Send class="w-5 h-5"/>
+                        <Send class="w-6 h-6"/>
                     {/if}
                 </button>
             </div>

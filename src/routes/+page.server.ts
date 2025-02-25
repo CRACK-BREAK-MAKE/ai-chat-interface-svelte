@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 
 export const load = async () => {
-	throw redirect(307, `/chat/${crypto.randomUUID()}`);
+	const sessionId = `${crypto.randomUUID()}`;
+	redirect(307, `/chat/${sessionId}`);
 };

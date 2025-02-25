@@ -40,9 +40,12 @@
 		]
 	},
 	"dependencies": {
+		"@langchain/core": "^0.3.40",
+		"@langchain/ollama": "^0.2.0",
+		"highlight.js": "^11.11.1",
 		"lucide-svelte": "^0.475.0",
 		"svelte-markdown": "^0.4.1",
-		"svelte-prism": "^1.1.6",
+		"tailwind-scrollbar": "^4.0.1",
 		"zod": "^3.24.2"
 	}
 }
