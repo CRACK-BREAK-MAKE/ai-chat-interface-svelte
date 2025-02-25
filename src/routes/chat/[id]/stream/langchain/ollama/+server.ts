@@ -8,10 +8,10 @@ const LLM_INFERENCE_SYSTEM_TEMPLATE = `You are a helpful AI assistant. Provide c
 const HUMAN_QUERY_WITH_HISTORY_PROMPT = `
 ---
 ### 1. Chat History
-{messages}
+{history}
 ---
 ### 2. User Question
-{question}
+{query}
 ---
 `;
 
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({request}) => {
 		// Stream the response in a non-blocking way
 		(async () => {
 			try {
-				const streamingResponse = await generationChain.stream({ history: history, query: query });
+				const streamingResponse = await generationChain.stream({history: history, query: query});
 				for await (const chunk of streamingResponse) {
 					// @ts-expect-error - This is a valid scope data
 					await writer.write(encoder.encode(chunk?.content));
