@@ -2,6 +2,7 @@ import {ChatOllama} from "@langchain/ollama";
 import {ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate} from "@langchain/core/prompts";
 import {type RequestHandler} from '@sveltejs/kit';
 import type {Message} from "$lib/types/message";
+import { LANGCHAIN_OLLAMA_MODEL } from "$env/static/private";
 
 const LLM_INFERENCE_SYSTEM_TEMPLATE = `You are a helpful AI assistant. Provide clear, concise, and accurate responses.`;
 
@@ -18,11 +19,10 @@ const HUMAN_QUERY_WITH_HISTORY_PROMPT = `
 export const POST: RequestHandler = async ({request}) => {
 	try {
 		const {query, messages} = await request.json();
-		console.log('Processing with LangChain.js and Ollama');
 
 		// Initialize the Ollama LLM
 		const llm = new ChatOllama({
-			model: "qwen2.5-coder:14b",
+			model: LANGCHAIN_OLLAMA_MODEL,
 			temperature: 0,
 		});
 
