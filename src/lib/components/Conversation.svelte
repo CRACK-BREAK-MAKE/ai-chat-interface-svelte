@@ -18,7 +18,7 @@
 </script>
 
 <div
-    class="flex-1 overflow-y-auto p-6 space-y-4 font-inter scroll-smooth scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-zinc-700"
+    class="flex-1 overflow-y-auto p-6 mx-4 space-y-4 font-inter scroll-smooth scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-zinc-700 rounded-b"
     bind:this={conversationContainer}
 >
     {#each $chatStore as message (message.id)}
