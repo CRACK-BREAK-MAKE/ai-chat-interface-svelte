@@ -15,7 +15,7 @@
 		errorMessage = '';
 
 		try {
-			const response = await fetch(`/chat/${data.sessionId}/stream/langchain/ollama`, {
+			const response = await fetch(`/chat/${data.sessionId}/stream`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({

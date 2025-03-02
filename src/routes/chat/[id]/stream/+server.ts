@@ -1,20 +1,22 @@
 import {json, type RequestHandler} from '@sveltejs/kit';
+import type {Message} from "$lib/types/message";
 
-export const POST: RequestHandler = async ({ request, params }) => {
+export const POST: RequestHandler = async ({request}) => {
 	try {
-		const { query, messages, sessionId } = await request.json();
-		const response = await fetch('http://localhost:8080/ask', {
+		const {query, messages, sessionId} = await request.json();
+		const history = messages.map((msg: Message) => `${msg.role}: ${msg.content}`).join('\n\n');
+		const response = await fetch('http://localhost:8080/inference', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({
 				query,
-				messages: [...messages],
+				history: history,
 				sessionId: sessionId
 			})
 		});
 
 		if (!response.ok) {
-			return json({ error: 'Failed to get LLM response' }, { status: response.status });
+			return json({error: 'Failed to get LLM response'}, {status: response.status});
 		}
 		return new Response(response.body, {
 			headers: {
@@ -25,6 +27,6 @@ export const POST: RequestHandler = async ({ request, params }) => {
 		});
 	} catch (error) {
 		console.error('Streaming error:', error);
-		return json({ error: 'Internal server error' }, { status: 500 });
+		return json({error: 'Internal server error'}, {status: 500});
 	}
 };
